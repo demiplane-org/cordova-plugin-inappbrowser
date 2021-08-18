@@ -540,12 +540,18 @@ static CDVWKInAppBrowser* instance = nil;
     }
     
     //if is an app store, tel, sms, mailto or geo link, let the system handle it, otherwise it fails to load it
+    NSArray * demiplaneSchemes = @[@"com.demiplane.app", @"com.demiplane.app.test"];
     NSArray * allowedSchemes = @[@"itms-appss", @"itms-apps", @"tel", @"sms", @"mailto", @"geo"];
-    NSArray * allowedSchemes = @[@"itms-appss", @"itms-apps", @"tel", @"sms", @"mailto", @"geo", @"com.demiplane.app", @"com.demiplane.app.test"];
     if ([allowedSchemes containsObject:[url scheme]]) {
         [theWebView stopLoading];
         [self openInSystem:url];
         shouldStart = NO;
+    }
+    else if ([demiplaneSchemes containsObject:[url scheme]]) {
+        [theWebView stopLoading];
+        [self openInSystem:url];
+        shouldStart = NO;
+        [self.inAppBrowserViewController close];
     }
     else if ((self.callbackId != nil) && isTopLevelNavigation) {
         // Send a loadstart event for each top-level navigation (includes redirects).
